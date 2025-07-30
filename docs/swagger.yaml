@@ -1,0 +1,110 @@
+basePath: /
+definitions:
+  handler.ErrorResponse:
+    description: Error response structure
+    properties:
+      message:
+        description: '@Description Error message'
+        example: File too large (max 10MB)
+        type: string
+    type: object
+  handler.UploadResponse:
+    description: Response structure for file upload operations
+    properties:
+      filename:
+        description: '@Description The name of the uploaded file'
+        example: example.jpg
+        type: string
+      message:
+        description: '@Description A message describing the operation result'
+        example: File uploaded successfully
+        type: string
+      size:
+        description: '@Description The size of the uploaded file in bytes'
+        example: 12345
+        type: integer
+      url:
+        description: '@Description The URL path to access the uploaded file'
+        example: /files/example.jpg
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A simple file storage server built with Go that allows you to upload
+    and serve files.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: File Storage Server API
+  version: "1.0"
+paths:
+  /files/{filename}:
+    get:
+      consumes:
+      - application/json
+      description: Download a file from the storage server
+      parameters:
+      - description: Name of the file to download
+        example: '"example.jpg"'
+        in: path
+        name: filename
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: File content
+          schema:
+            type: file
+        "400":
+          description: Bad request - filename required
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Download a file
+      tags:
+      - files
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a file to the storage server
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: File uploaded successfully
+          schema:
+            $ref: '#/definitions/handler.UploadResponse'
+        "400":
+          description: Bad request - invalid file or no file provided
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Upload a file
+      tags:
+      - files
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
