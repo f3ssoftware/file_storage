@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  file-storage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: file-storage-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - file-storage-data:/app/uploads
+    environment:
+      - TZ=UTC
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - file-storage-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.file-storage.rule=Host(`file-storage.localhost`)"
+      - "traefik.http.services.file-storage.loadbalancer.server.port=8080"
+
+  # Optional: Add Nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    container_name: file-storage-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - file-storage
+    restart: unless-stopped
+    networks:
+      - file-storage-network
+    profiles:
+      - production
+
+  # Optional: Add Redis for caching (future enhancement)
+  redis:
+    image: redis:alpine
+    container_name: file-storage-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - file-storage-network
+    profiles:
+      - production
+
+volumes:
+  file-storage-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  file-storage-network:
+    driver: bridge 

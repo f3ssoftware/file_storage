@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+API_DOCUMENTATION.md
+TESTING_GUIDE.md
+*.md
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test files
+test.html
+test_swagger.md
+
+# Development files
+uploads/
+docs/
+
+# SSL certificates (for production)
+ssl/ 

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  file-storage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: file-storage-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - file-storage-dev-data:/app/uploads
+    environment:
+      - TZ=UTC
+    restart: unless-stopped
+    networks:
+      - file-storage-dev-network
+    command: ["go", "run", "cmd/server/main.go"]
+
+volumes:
+  file-storage-dev-data:
+    driver: local
+
+networks:
+  file-storage-dev-network:
+    driver: bridge 
