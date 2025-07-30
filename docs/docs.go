@@ -57,13 +57,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request - filename required",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrorResponse"
+                            "$ref": "#/definitions/internal_handler.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "File not found",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrorResponse"
+                            "$ref": "#/definitions/internal_handler.ErrorResponse"
                         }
                     }
                 }
@@ -95,19 +95,19 @@ const docTemplate = `{
                     "201": {
                         "description": "File uploaded successfully",
                         "schema": {
-                            "$ref": "#/definitions/handler.UploadResponse"
+                            "$ref": "#/definitions/internal_handler.UploadResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request - invalid file or no file provided",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrorResponse"
+                            "$ref": "#/definitions/internal_handler.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ErrorResponse"
+                            "$ref": "#/definitions/internal_handler.ErrorResponse"
                         }
                     }
                 }
@@ -115,7 +115,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.ErrorResponse": {
+        "internal_handler.ErrorResponse": {
             "description": "Error response structure",
             "type": "object",
             "properties": {
@@ -126,7 +126,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.UploadResponse": {
+        "internal_handler.UploadResponse": {
             "description": "Response structure for file upload operations",
             "type": "object",
             "properties": {
@@ -172,8 +172,6 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "A simple file storage server built with Go that allows you to upload and serve files.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
 }
 
 func init() {
